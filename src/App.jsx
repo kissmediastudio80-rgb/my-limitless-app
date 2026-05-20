@@ -10,20 +10,22 @@ function App() {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!url) return;
-    // Universal Regex Extractor — Handles standard URLs, Shorts, and mobile youtu.be shares flawlessly
-const videoMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-const extractedId = videoMatch ? videoMatch[1] : null;
+    
+    // Universal Regex Extractor — Handles standard URLs, Shorts, and mobile share links flawlessly
+    const videoMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu.be\/)([a-zA-Z0-9_-]{11})/);
+    const extractedId = videoMatch ? videoMatch[1] : null;
 
-if (!extractedId) {
-  setStatus('Invalid YouTube link format! Try copying a clean share link.');
-  setLoading(false);
-  return;
-}
+    if (!extractedId) {
+      setStatus('Invalid YouTube link format! Try copying a clean share link.');
+      setLoading(false);
+      return;
+    }
 
     setLoading(true);
-    setStatus('Connecting to your local translation server...');
+    setSegments([]);
+    setStatus('Connecting to your cloud translation server...');
     
-    // Calls your private, uncapped backend service
+    // Calls your private, uncapped backend service running on Render
     const result = await transcribeToThai(url, (step) => {
       if (step === 0) setStatus('Validating YouTube link structure...');
       if (step === 1) setStatus('Scraping timed captions & translating text on-the-fly...');
@@ -31,15 +33,18 @@ if (!extractedId) {
     });
 
     if (result.segments && result.segments.length > 0) {
-      Could not generate subtitles. Render might be waking up, or captions are disabled on this video.
-
+      setSegments(result.segments);
+      setStatus(`Success! Generated ${result.segments.length} Thai subtitle timestamps.`);
+    } else {
+      setStatus('Could not generate subtitles. Render might be waking up, or captions are disabled on this video.');
+    }
     setLoading(false);
   };
 
   return (
     <div style={{ maxWidth: '800px', margin: '40px auto', padding: '20px', fontFamily: 'sans-serif' }}>
       <h1 style={{ color: '#5b21b6', marginBottom: '5px' }}>🎬 Limitless Thai Transcript Dashboard</h1>
-      <p style={{ color: '#475569', marginTop: '0', marginBottom: '30px' }}>Uncapped subtitle extraction engine running directly on your own computer processor.</p>
+      <p style={{ color: '#475569', marginTop: '0', marginBottom: '30px' }}>Uncapped subtitle extraction engine running directly on your own cloud network.</p>
       
       <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '25px' }}>
         <input 
