@@ -10,6 +10,16 @@ function App() {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!url) return;
+    // Universal Regex Extractor — Handles standard URLs, Shorts, and mobile youtu.be shares flawlessly
+const videoMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+const extractedId = videoMatch ? videoMatch[1] : null;
+
+if (!extractedId) {
+  setStatus('Invalid YouTube link format! Try copying a clean share link.');
+  setLoading(false);
+  return;
+}
+
     setLoading(true);
     setStatus('Connecting to your local translation server...');
     
