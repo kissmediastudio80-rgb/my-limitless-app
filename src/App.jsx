@@ -31,11 +31,8 @@ if (!extractedId) {
     });
 
     if (result.segments && result.segments.length > 0) {
-      setSegments(result.segments);
-      setStatus(`Success! Generated ${result.segments.length} Thai subtitle timestamps.`);
-    } else {
-      setStatus('Could not generate subtitles. Make sure your server terminal window is open and running on port 5000.');
-    }
+      Could not generate subtitles. Render might be waking up, or captions are disabled on this video.
+
     setLoading(false);
   };
 
