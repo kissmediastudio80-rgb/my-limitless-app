@@ -1,7 +1,8 @@
 // src/transcribeService.js
 // 100% Limit-free — Completely decoupled from Base44 servers
 
-const BACKEND_URL = 'https://onrender.com';
+const BACKEND_URL = 'https://private-caption-backend.onrender.com';
+
  // Points straight to your backend terminal port
 
 export async function transcribeToThai(url, setTranscribeStep) {
